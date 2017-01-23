@@ -13,6 +13,7 @@ import iAd
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //Global Variables
+    let screenSize: CGRect = UIScreen.main.bounds
     let jumperSpriteName = "Jumper"
     let backgroundSpriteName = "Background"
     let spikeSpriteName = "Spike"
@@ -44,14 +45,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let myLabel = SKLabelNode(fontNamed:"Arial")
     
     override func didMove(to view: SKView) {
+        /*
+        let alert = UIAlertController(title: "Welcome!", message:"Press \"Start\" to begin.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Start", style: .default) { _ in
+            self.reset()
+        })
+        sceneController.present(alert, animated: true){}
+        */
         
         /* Setup your scene here */
         
-        /*//Title
-        myLabel.text = "Jump Man"
-        myLabel.fontSize = 45
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame) , y:CGRectGetMaxY(self.frame) * 0.90)
-        self.addChild(myLabel)*/
+        /*
+         //Title
+         self.addChild(myLabel)
+         self.myLabel.text = "Jump Man"
+         self.myLabel.fontSize = 45
+         self.myLabel.position = CGPoint(x:self.frame.midX , y:self.frame.maxY * 0.90)
+         */
+        
  
         //Connecting variables to their sprites
         guard let Jumper = self.childNode(withName: jumperSpriteName) as? SKSpriteNode,
@@ -78,10 +89,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setPhysicsBitMasks()
         self.physicsWorld.contactDelegate = self
         
+
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         /* Called when a touch begins */
+        if let touch = touches.first {
+            let position :CGPoint = touch.location(in: view)
+            
+            if(position.x > self.screenSize.width/2){
+                self.Jumper.position = CGPoint(x: (self.Jumper.position.x+150) , y: self.Jumper.position.y)
+            }
+            else if(position.x < self.screenSize.width/2){
+                self.Jumper.position = CGPoint(x: (self.Jumper.position.x-150) , y: self.Jumper.position.y)
+            }
+
+            
+        }
+        
         
     }
     
@@ -181,10 +207,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(Bounce)
         self.addChild(Spike)
         self.addChild(Ground)
+        
+        let spikeTexture = SKTexture(imageNamed: "Spike")
+        for i in 0...10 {
+            // Create box with defined texture
+            let box = SKSpriteNode(texture: spikeTexture);
+            // Set position of box dynamically
+            box.position = CGPoint(x:(Int(arc4random_uniform(UInt32(self.frame.maxX)))), y:(Int(arc4random_uniform(UInt32(self.frame.maxY)))));
+            // Name for easier use (may need to change if you have multiple rows generated)
+            box.name = "Spike"+String(i);
+           
+            
+            
+            
+            box.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 45, height: 50))
+            box.physicsBody?.isDynamic = false
+            
+            box.physicsBody?.categoryBitMask = PhysicsBitMasks.enemy
+            box.physicsBody?.collisionBitMask = PhysicsBitMasks.player
+            box.physicsBody?.contactTestBitMask = PhysicsBitMasks.player
+            
+            addChild(box);
+        }
 
+        
 
         self.Jumper.position = CGPoint(x: 500, y: -68)
-        self.Spike.position = CGPoint(x: 501, y: 302)
+        
+        //self.Spike.position = CGPoint(x: 501, y: 302)
         self.Ground.position = CGPoint(x: 501, y: -922)
         self.Bounce.position = CGPoint(x: 501, y: -412)
         
