@@ -59,7 +59,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let Spike = self.childNode(withName: spikeSpriteName) as? SKSpriteNode,
             let Ground = self.childNode(withName: groundSpriteName) as? SKSpriteNode,
             let Bounce = self.childNode(withName: bounceSpriteName) as? SKSpriteNode,
-            let Trampoline = self.childNode(withName: groundSpriteName) as? SKSpriteNode
+            let Trampoline = self.childNode(withName: trampolineSpriteName) as? SKSpriteNode
             else {
                 print("Sprites not found.")
                 return
@@ -160,7 +160,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func gameOver() {
         self.isPaused = true
-        //presentScore()
+        collision = false
+        presentScore()
     }
     
     func presentScore() {
@@ -173,27 +174,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func reset() {
-        /*self.removeAllChildren()
+        self.removeAllChildren()
         self.addChild(Background)
-        self.addChild(Spike)
         self.addChild(Jumper)
-        self.addChild(Ground)
-        self.addChild(Bounce)
         self.addChild(Trampoline)
-        
+        self.addChild(Bounce)
+        self.addChild(Spike)
+        self.addChild(Ground)
+
+
         self.Jumper.position = CGPoint(x: 500, y: -68)
         self.Spike.position = CGPoint(x: 501, y: 302)
         self.Ground.position = CGPoint(x: 501, y: -922)
         self.Bounce.position = CGPoint(x: 501, y: -412)
+        
         self.Trampoline.position = CGPoint(x: 501, y: -466)
+        
         
         moveCameraWith(Jumper, offset: 350)
         
         backgrounds = []
         backgrounds.append(Background)
-        addNextBG()*/
+        addNextBG()
         
-        //self.paused = false
+        self.isPaused = false
+
     }
     
 }
